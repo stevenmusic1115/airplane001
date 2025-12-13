@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMS Free Trial Lesson Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 30%, #60a5fa 60%, #93c5fd 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        /* Stars in the sky */
+        .star {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 100px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: float-cloud 40s infinite linear;
+            z-index: 1;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 100px;
+        }
+
+        .cloud1 {
+            width: 130px;
+            height: 50px;
+            top: 8%;
+            left: -130px;
+        }
+
+        .cloud1::before {
+            width: 65px;
+            height: 65px;
+            top: -30px;
+            left: 15px;
+        }
+
+        .cloud1::after {
+            width: 75px;
+            height: 40px;
+            top: -18px;
+            right: 15px;
+        }
+
+        .cloud2 {
+            width: 150px;
+            height: 55px;
+            top: 25%;
+            left: -150px;
+            animation-delay: 13s;
+        }
+
+        .cloud2::before {
+            width: 75px;
+            height: 75px;
+            top: -35px;
+            left: 25px;
+        }
+
+        .cloud2::after {
+            width: 85px;
+            height: 45px;
+            top: -20px;
+            right: 20px;
+        }
+
+        .cloud3 {
+            width: 110px;
+            height: 45px;
+            top: 55%;
+            left: -110px;
+            animation-delay: 26s;
+        }
+
+        .cloud3::before {
+            width: 55px;
+            height: 55px;
+            top: -28px;
+            left: 18px;
+        }
+
+        .cloud3::after {
+            width: 65px;
+            height: 35px;
+            top: -15px;
+            right: 15px;
+        }
+
+        @keyframes float-cloud {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 300px)); }
+        }
+
+        .bird {
+            position: fixed;
+            font-size: 2.5rem;
+            animation: fly-bird 30s infinite linear;
+            z-index: 1;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes fly-bird {
+            0% { 
+                transform: translateX(-150px) translateY(0) rotate(-15deg);
+                opacity: 0;
+            }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { 
+                transform: translateX(calc(100vw + 150px)) translateY(-80px) rotate(-15deg);
+                opacity: 0;
+            }
+        }
+
+        /* Modern Airplane Design */
+        .airplane-body {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
+            border-radius: 50px;
+            padding: 3rem 2rem;
+            box-shadow: 
+                0 40px 100px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 -30px 60px rgba(59, 130, 246, 0.05);
+            position: relative;
+            border: 10px solid #2563eb;
+        }
+
+        /* Sleek Cockpit */
+        .cockpit {
+            width: 180px;
+            height: 110px;
+            margin: -90px auto 2rem;
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            border-radius: 90px 90px 0 0;
+            border: 8px solid #1e3a8a;
+            position: relative;
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cockpit::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 40px;
+            border: 5px solid #1e3a8a;
+            box-shadow: inset 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cockpit::after {
+            content: '✈️';
+            position: absolute;
+            font-size: 2.5rem;
+            top: -15px;
+            right: -15px;
+            animation: rotate-prop 2s linear infinite;
+        }
+
+        @keyframes rotate-prop {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Fuselage Windows */
+        .window {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 50%;
+            border: 5px solid #1e40af;
+            box-shadow: 
+                inset 0 3px 12px rgba(0, 0, 0, 0.3),
+                inset -2px -2px 8px rgba(255, 255, 255, 0.5),
+                0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .window::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 6px;
+            left: 6px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+            border-radius: 50%;
+        }
+
+        .window-left {
+            left: -18px;
+        }
+
+        .window-right {
+            right: -18px;
+        }
+
+        /* Dynamic Wings */
+        .wing {
+            position: absolute;
+            width: 220px;
+            height: 90px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            top: 45%;
+            transform: translateY(-50%);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4),
+                inset 0 3px 15px rgba(255, 255, 255, 0.2),
+                inset 0 -3px 15px rgba(0, 0, 0, 0.3);
+            border: 6px solid #1e3a8a;
+            animation: wing-flutter 4s ease-in-out infinite;
+        }
+
+        @keyframes wing-flutter {
+            0%, 100% { transform: translateY(-50%) rotateZ(0deg); }
+            50% { transform: translateY(-50%) rotateZ(-1.5deg); }
+        }
+
+        .wing-left {
+            left: -175px;
+            border-radius: 45px 0 0 45px;
+            clip-path: polygon(0 25%, 100% 35%, 100% 65%, 0 75%);
+            transform-origin: right center;
+        }
+
+        .wing-left::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 8px,
+                rgba(30, 58, 138, 0.15) 8px,
+                rgba(30, 58, 138, 0.15) 16px
+            );
+        }
+
+        .wing-right {
+            right: -175px;
+            border-radius: 0 45px 45px 0;
+            clip-path: polygon(0 35%, 100% 25%, 100% 75%, 0 65%);
+            transform-origin: left center;
+            animation-delay: 0.2s;
+        }
+
+        .wing-right::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 8px,
+                rgba(30, 58, 138, 0.15) 8px,
+                rgba(30, 58, 138, 0.15) 16px
+            );
+        }
+
+        /* Modern Tail Design */
+        .tail {
+            width: 140px;
+            height: 160px;
+            margin: 0 auto -70px;
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            clip-path: polygon(30% 0, 70% 0, 60% 100%, 40% 100%);
+            border: 6px solid #1e3a8a;
+            position: relative;
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4),
+                inset 0 5px 20px rgba(255, 255, 255, 0.2),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            animation: tail-sway 5s ease-in-out infinite;
+        }
+
+        @keyframes tail-sway {
+            0%, 100% { transform: rotateZ(0deg); }
+            50% { transform: rotateZ(0.8deg); }
+        }
+
+        .tail::before {
+            content: '';
+            position: absolute;
+            width: 85%;
+            height: 35px;
+            top: 45%;
+            left: 7.5%;
+            background: linear-gradient(90deg, #1e40af 0%, #2563eb 50%, #1e40af 100%);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .tail::after {
+            content: '⭐';
+            position: absolute;
+            font-size: 2.5rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-star 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+        }
+
+        @keyframes pulse-star {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 4px solid #4169E1;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1E3A8A;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: #1E3A8A;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 3px solid #4169E1;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1E3A8A;
+            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .day-selector-btn {
+            padding: 1rem;
+            border: 3px solid #4169E1;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1E3A8A;
+            font-size: 0.95rem;
+        }
+
+        .day-selector-btn:hover {
+            background: #E6F2FF;
+            border-color: #1E3A8A;
+            transform: translateY(-2px);
+        }
+
+        .day-selector-btn.selected {
+            background: linear-gradient(135deg, #4169E1 0%, #6495ED 100%);
+            color: white;
+            border-color: #1E3A8A;
+            box-shadow: 0 6px 20px rgba(65, 105, 225, 0.5);
+        }
+
+        .date-selector-btn {
+            padding: 1.2rem;
+            border: 3px solid #4169E1;
+            border-radius: 18px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1E3A8A;
+            font-size: 1rem;
+        }
+
+        .date-selector-btn:hover {
+            background: #E6F2FF;
+            border-color: #1E3A8A;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(65, 105, 225, 0.3);
+        }
+
+        .date-selector-btn.selected {
+            background: linear-gradient(135deg, #4169E1 0%, #6495ED 100%);
+            color: white;
+            border-color: #1E3A8A;
+            box-shadow: 0 10px 30px rgba(65, 105, 225, 0.6);
+        }
+
+        .booking-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 4px solid #4169E1;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1E3A8A;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 0.5rem;
+            min-width: 900px;
+        }
+
+        .day-header {
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #4169E1 0%, #6495ED 100%);
+            padding: 1rem 0.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(65, 105, 225, 0.4);
+            border: 3px solid #1E3A8A;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-label {
+            font-weight: 700;
+            color: #1E3A8A;
+            background: #E6F2FF;
+            padding: 0.8rem 0.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            border: 2px solid #4169E1;
+        }
+
+        .seat-box {
+            width: 100%;
+            min-height: 70px;
+            border: 4px solid #10b981;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .seat-available:hover {
+            background: #d1fae5;
+            border-color: #059669;
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .seat-selected {
+            background: linear-gradient(135deg, #4169E1 0%, #6495ED 100%);
+            border-color: #1E3A8A;
+            color: white;
+            box-shadow: 0 8px 30px rgba(65, 105, 225, 0.6);
+            animation: pulse-select 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-select {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .seat-booked {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+            color: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .seat-not-available {
+            background: #fca5a5;
+            border-color: #dc2626;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.5;
+            font-size: 1.5rem;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 20px;
+            border: 3px solid #4169E1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .legend-text {
+            font-weight: 700;
+            color: #1E3A8A;
+            font-size: 0.9rem;
+        }
+
+        .control-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4169E1 0%, #1E3A8A 100%);
+            padding: 1.5rem;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            border-top: 5px solid #FFD700;
+        }
+
+        .control-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .selected-info {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .selected-count {
+            font-size: 2.5rem;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .book-btn {
+            padding: 1rem 2.5rem;
+            background: #FFD700;
+            color: #1E3A8A;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .book-btn:hover:not(:disabled) {
+            background: #FFC700;
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6);
+        }
+
+        .book-btn:disabled {
+            background: #9ca3af;
+            color: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .message-box {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, #4169E1 0%, #1E3A8A 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 200;
+            border: 4px solid #FFD700;
+        }
+
+        .message-box.hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .wing-left, .wing-right {
+                display: none;
+            }
+            .airplane-body {
+                padding: 2rem 1rem;
+            }
+            .form-title, .section-title {
+                font-size: 1.5rem;
+            }
+            .calendar-grid {
+                grid-template-columns: 80px repeat(7, 80px);
+                min-width: 700px;
+            }
+            .seat-box {
+                min-height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+    <div class="bird" style="top: 15%; animation-delay: 0s;">🕊️</div>
+    <div class="bird" style="top: 40%; animation-delay: 8s;">🕊️</div>
+    <div class="bird" style="top: 70%; animation-delay: 16s;">🕊️</div>
+
+    <div class="cockpit">
+        <div class="propeller"></div>
+    </div>
+
+    <div class="airplane-body">
+        <div class="window window-left" style="top: 15%;"></div>
+        <div class="window window-left" style="top: 35%;"></div>
+        <div class="window window-left" style="top: 55%;"></div>
+        <div class="window window-left" style="top: 75%;"></div>
+        
+        <div class="window window-right" style="top: 15%;"></div>
+        <div class="window window-right" style="top: 35%;"></div>
+        <div class="window window-right" style="top: 55%;"></div>
+        <div class="window window-right" style="top: 75%;"></div>
+
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-size: 3rem; font-weight: 900; color: #1E3A8A; margin-bottom: 0.5rem;">
+                ✈️ VMS Free Trial Lesson ✈️
+            </h1>
+            <p style="font-size: 1.3rem; color: #4169E1; font-weight: 700;">
+                Book Your Flight to Music Success!
+            </p>
+        </div>
+
+        <div class="form-section">
+            <h2 class="form-title">📝 Passenger Information</h2>
+            <div class="form-grid">
+                <div>
+                    <label class="form-label">Parent Name *</label>
+                    <input type="text" id="parentName" class="form-input" placeholder="John Smith" required>
+                </div>
+                <div>
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" id="parentPhone" class="form-input" placeholder="+65 9123 4567" required>
+                </div>
+                <div>
+                    <label class="form-label">Child Name *</label>
+                    <input type="text" id="childName" class="form-input" placeholder="Emily Smith" required>
+                </div>
+                <div>
+                    <label class="form-label">Age *</label>
+                    <input type="number" id="childAge" class="form-input" placeholder="8" min="3" max="18" required>
+                </div>
+                <div>
+                    <label class="form-label">Instrument *</label>
+                    <select id="instrument" class="form-input" required>
+                        <option value="">Select Instrument</option>
+                        <option value="Piano">Piano</option>
+                        <option value="Sing and Play">Sing and Play</option>
+                        <option value="Acoustic Guitar">Acoustic Guitar</option>
+                        <option value="Classical Guitar">Classical Guitar</option>
+                        <option value="Electric Guitar">Electric Guitar</option>
+                        <option value="Ukulele">Ukulele</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Grade *</label>
+                    <select id="grade" class="form-input" required>
+                        <option value="">Select Grade</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Initial Grade">Initial Grade</option>
+                        <option value="Grade 1">Grade 1</option>
+                        <option value="Grade 2">Grade 2</option>
+                        <option value="Grade 3">Grade 3</option>
+                        <option value="Grade 4">Grade 4</option>
+                        <option value="Grade 5">Grade 5</option>
+                        <option value="Grade 6">Grade 6</option>
+                        <option value="Grade 7">Grade 7</option>
+                        <option value="Grade 8">Grade 8</option>
+                        <option value="Diploma">Diploma</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <label class="form-label">Select Day of Week *</label>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.8rem;">
+                    <div class="day-selector-btn" data-day="Mon.">Mon</div>
+                    <div class="day-selector-btn" data-day="Tue.">Tue</div>
+                    <div class="day-selector-btn" data-day="Wed.">Wed</div>
+                    <div class="day-selector-btn" data-day="Thu.">Thu</div>
+                    <div class="day-selector-btn" data-day="Fri.">Fri</div>
+                    <div class="day-selector-btn" data-day="Sat.">Sat</div>
+                    <div class="day-selector-btn" data-day="Sun.">Sun</div>
+                </div>
+            </div>
+
+            <div id="dateSelectionContainer" style="margin-top: 1.5rem; display: none;">
+                <label class="form-label">Select Specific Date *</label>
+                <div id="dateSelector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;"></div>
+            </div>
+        </div>
+
+        <div class="booking-section">
+            <h2 class="section-title">🎫 Select Your Flight Time</h2>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-box" style="border: 4px solid #10b981; background: white;"></div>
+                    <span class="legend-text">Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="border: 4px solid #1E3A8A; background: linear-gradient(135deg, #4169E1, #6495ED); color: white;">✓</div>
+                    <span class="legend-text">Selected</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="border: 4px solid #9ca3af; background: #e5e7eb; color: #6b7280;">✕</div>
+                    <span class="legend-text">Full</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="border: 4px solid #dc2626; background: #fca5a5; color: white;">🚫</div>
+                    <span class="legend-text">Not Available</span>
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tail"></div>
+
+    <div class="control-panel">
+        <div class="control-content">
+            <div class="selected-info">
+                Selected: <span class="selected-count" id="selectedCount">0</span>
+            </div>
+            <button id="bookButton" class="book-btn" disabled>
+                Book Now 🚀
+            </button>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box hidden"></div>
+
+<script>
+const DAYS = ["Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat.", "Sun."];
+const DAY_MAP = {
+    "Monday": "Mon.", "Tuesday": "Tue.", "Wednesday": "Wed.", "Thursday": "Thu.",
+    "Friday": "Fri.", "Saturday": "Sat.", "Sunday": "Sun."
+};
+const START_HOUR = 9, END_HOUR = 21, END_MINUTE = 0, INTERVAL_MINUTES = 30;
+
+let classState = {};
+let freeSlots = new Set();
+let selectedDayOfWeek = null;
+let selectedDate = null;
+
+function getNextTwoDates(dayOfWeek) {
+    const dayIndex = DAYS.indexOf(dayOfWeek);
+    const today = new Date();
+    const currentDay = today.getDay();
+    const targetDay = dayOfWeek === "Sun." ? 0 : dayIndex + 1;
+    const dates = [];
+    let daysToAdd = (targetDay - currentDay + 7) % 7;
+    if (daysToAdd === 0) daysToAdd = 7;
+    const firstDate = new Date(today);
+    firstDate.setDate(today.getDate() + daysToAdd);
+    dates.push(new Date(firstDate));
+    const secondDate = new Date(firstDate);
+    secondDate.setDate(firstDate.getDate() + 7);
+    dates.push(new Date(secondDate));
+    return dates;
+}
+
+function formatDate(date) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+}
+
+function formatTime(hour, minute) {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+}
+
+function generateTimeSlots() {
+    const slots = [];
+    let currentHour = START_HOUR, currentMinute = 0;
+    while (currentHour < END_HOUR || (currentHour === END_HOUR && currentMinute <= END_MINUTE)) {
+        slots.push(formatTime(currentHour, currentMinute));
+        currentMinute += INTERVAL_MINUTES;
+        if (currentMinute >= 60) {
+            currentHour += Math.floor(currentMinute / 60);
+            currentMinute %= 60;
+        }
+    }
+    return slots;
+}
+
+const timeSlots = generateTimeSlots();
+
+function parseTimeRange(timeRange) {
+    const cleaned = timeRange.replace(/\s/g, '').toLowerCase();
+    const match = cleaned.match(/(\d{1,2}):(\d{2})(am|pm)-(\d{1,2}):(\d{2})(am|pm)/);
+    if (!match) return null;
+    let startHour = parseInt(match[1]);
+    const startMinute = parseInt(match[2]), startPeriod = match[3];
+    if (startPeriod === 'pm' && startHour !== 12) startHour += 12;
+    if (startPeriod === 'am' && startHour === 12) startHour = 0;
+    return formatTime(startHour, startMinute);
+}
+
+function isNotAvailableTime(day, time) {
+    const weekdays = ["Mon.", "Tue.", "Wed.", "Thu.", "Fri."];
+    const weekend = ["Sat.", "Sun."];
+    const match = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (!match) return false;
+    let hour = parseInt(match[1]);
+    const period = match[3].toUpperCase();
+    if (period === 'PM' && hour !== 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+    if (weekdays.includes(day) && hour >= 9 && hour < 14) return true;
+    if (weekend.includes(day) && (hour === 20 || hour === 21)) return true;
+    return false;
+}
+
+function loadFreeSlots() {
+    const instrument = document.getElementById('instrument').value;
+    if (!instrument) {
+        showMessage("⚠️ Please select an instrument first!");
+        return;
+    }
+    freeSlots.clear();
+    if (typeof google !== 'undefined' && google.script) {
+        google.script.run
+            .withSuccessHandler(function(data) {
+                data.forEach(row => {
+                    const shortDay = DAY_MAP[row[0]];
+                    const startTime = parseTimeRange(row[1]);
+                    if (shortDay && startTime) freeSlots.add(`${shortDay}-${startTime}`);
+                });
+                if (selectedDate) renderCalendar();
+            })
+            .withFailureHandler(() => {
+                if (selectedDate) renderCalendar();
+            })
+            .getFreeSlots(instrument);
+    } else {
+        if (selectedDate) renderCalendar();
+    }
+}
+
+function getInitialState(day, time) {
+    const slotId = `${day}-${time}`;
+    if (isNotAvailableTime(day, time)) return 'not-available';
+    if (freeSlots.has(slotId)) return 'available';
+    return 'booked';
+}
+
+function toggleSeat(slotId) {
+    const current = classState[slotId];
+    if (current === 'booked') return showMessage("😔 This slot is full");
+    if (current === 'not-available') return showMessage("🚫 This time is unavailable");
+    if (current === 'selected') {
+        classState[slotId] = 'available';
+    } else {
+        Object.keys(classState).forEach(id => {
+            if (classState[id] === 'selected') classState[id] = 'available';
+        });
+        classState[slotId] = 'selected';
+    }
+    renderCalendar();
+    updateCount();
+}
+
+function showMessage(msg) {
+    const box = document.getElementById('messageBox');
+    box.textContent = msg;
+    box.classList.remove('hidden');
+    setTimeout(() => box.classList.add('hidden'), 2500);
+}
+
+function updateCount() {
+    const count = Object.values(classState).filter(s => s === 'selected').length;
+    document.getElementById('selectedCount').textContent = count;
+    document.getElementById('bookButton').disabled = count === 0;
+}
+
+function renderCalendar() {
+    const grid = document.getElementById('calendarGrid');
+    if (!selectedDayOfWeek || !selectedDate) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.3rem; font-weight: 800; color: #1E3A8A;">Please select a day of week and date to view available slots 📅</div>';
+        return;
+    }
+    grid.innerHTML = '';
+    const timeHeader = document.createElement('div');
+    timeHeader.className = 'time-label';
+    timeHeader.textContent = 'Time';
+    timeHeader.style.fontWeight = '800';
+    timeHeader.style.background = 'linear-gradient(135deg, #4169E1 0%, #6495ED 100%)';
+    timeHeader.style.color = 'white';
+    timeHeader.style.border = '3px solid #1E3A8A';
+    grid.appendChild(timeHeader);
+    DAYS.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'day-header';
+        header.textContent = day;
+        if (day === selectedDayOfWeek) {
+            header.style.background = 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+            header.style.borderColor = '#FF8C00';
+            header.style.boxShadow = '0 6px 25px rgba(255, 215, 0, 0.6)';
+        }
+        grid.appendChild(header);
+    });
+    timeSlots.forEach(time => {
+        const label = document.createElement('div');
+        label.className = 'time-label';
+        label.textContent = time;
+        grid.appendChild(label);
+        DAYS.forEach(day => {
+            const slotId = `${day}-${time}`;
+            if (day !== selectedDayOfWeek) {
+                const disabledSeat = document.createElement('div');
+                disabledSeat.className = 'seat-box';
+                disabledSeat.style.opacity = '0.2';
+                disabledSeat.style.cursor = 'not-allowed';
+                disabledSeat.style.background = '#f3f4f6';
+                disabledSeat.style.borderColor = '#d1d5db';
+                grid.appendChild(disabledSeat);
+                return;
+            }
+            const state = classState[slotId] || getInitialState(day, time);
+            classState[slotId] = state;
+            const seat = document.createElement('div');
+            seat.className = 'seat-box';
+            seat.id = slotId;
+            if (state === 'not-available') {
+                seat.classList.add('seat-not-available');
+                seat.textContent = '🚫';
+            } else if (state === 'booked') {
+                seat.classList.add('seat-booked');
+                seat.textContent = '✕';
+            } else if (state === 'selected') {
+                seat.classList.add('seat-selected');
+                seat.textContent = '✓';
+            } else {
+                seat.classList.add('seat-available');
+            }
+            seat.title = `${day} ${selectedDate} at ${time}`;
+            seat.addEventListener('click', () => toggleSeat(slotId));
+            grid.appendChild(seat);
+        });
+    });
+}
+
+document.querySelectorAll('.day-selector-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const instrument = document.getElementById('instrument').value;
+        if (!instrument) {
+            showMessage("⚠️ Please select an instrument first!");
+            return;
+        }
+        document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedDayOfWeek = this.dataset.day;
+        selectedDate = null;
+        const dateContainer = document.getElementById('dateSelectionContainer');
+        const dateSelector = document.getElementById('dateSelector');
+        dateContainer.style.display = 'block';
+        dateSelector.innerHTML = '';
+        const nextDates = getNextTwoDates(selectedDayOfWeek);
+        nextDates.forEach(date => {
+            const btn = document.createElement('div');
+            btn.className = 'date-selector-btn';
+            btn.dataset.date = formatDate(date);
+            btn.innerHTML = `📅 ${formatDate(date)}`;
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.date-selector-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedDate = this.dataset.date;
+                renderCalendar();
+            });
+            dateSelector.appendChild(btn);
+        });
+        renderCalendar();
+    });
+});
+
+document.getElementById('instrument').addEventListener('change', function() {
+    if (this.value) {
+        loadFreeSlots();
+    }
+});
+
+document.getElementById('bookButton').addEventListener('click', function() {
+    const parentName = document.getElementById('parentName').value.trim();
+    const parentPhone = document.getElementById('parentPhone').value.trim();
+    const childName = document.getElementById('childName').value.trim();
+    const childAge = document.getElementById('childAge').value.trim();
+    const instrument = document.getElementById('instrument').value;
+    const grade = document.getElementById('grade').value;
+    if (!parentName || !parentPhone || !childName || !childAge || !instrument || !grade) {
+        return showMessage("⚠️ Please fill all required fields!");
+    }
+    if (!selectedDayOfWeek) return showMessage("⚠️ Please select a day of week!");
+    if (!selectedDate) return showMessage("⚠️ Please select a date!");
+    const selectedSlot = Object.entries(classState).find(([_, state]) => state === 'selected');
+    if (!selectedSlot) {
+        return showMessage("⚠️ Please select a time slot!");
+    }
+    const [slotId] = selectedSlot;
+    const [day, ...timeParts] = slotId.split('-');
+    const time = timeParts.join(' ');
+    const bookingData = {
+        parentName,
+        parentPhone,
+        childName,
+        childAge,
+        instrument,
+        grade,
+        date: selectedDate,
+        day,
+        time,
+        timestamp: new Date().toISOString()
+    };
+    this.disabled = true;
+    this.innerHTML = '<span class="loading-spinner"></span> Booking...';
+    if (typeof google !== 'undefined' && google.script) {
+        google.script.run
+            .withSuccessHandler(result => {
+                if (result.success) {
+                    showMessage("🎉 Booking successful!");
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showMessage("❌ Booking failed: " + result.message);
+                }
+                this.disabled = false;
+                this.innerHTML = 'Book Now 🚀';
+            })
+            .withFailureHandler(err => {
+                showMessage("❌ Error: " + err.message);
+                this.disabled = false;
+                this.innerHTML = 'Book Now 🚀';
+            })
+            .submitBooking(bookingData);
+    } else {
+        showMessage("🎉 Demo: Booking successful!");
+        setTimeout(() => {
+            this.disabled = false;
+            this.innerHTML = 'Book Now 🚀';
+        }, 1500);
+    }
+});
+
+window.onload = function() {
+    renderCalendar();
+    updateCount();
+};
+</script>
+
+</body>
+</html>
