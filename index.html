@@ -718,13 +718,15 @@
 </head>
 <body>
 
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
+    <!-- Hopping rabbits replacing clouds -->
+    <div class="cloud cloud1">🐰</div>
+    <div class="cloud cloud2">🐇</div>
+    <div class="cloud cloud3">🐰</div>
 
-    <div class="bird" style="top: 15%; animation-delay: 0s;">🕊️</div>
-    <div class="bird" style="top: 40%; animation-delay: 8s;">🕊️</div>
-    <div class="bird" style="top: 70%; animation-delay: 16s;">🕊️</div>
+    <!-- Main hopping rabbits -->
+    <div class="rabbit rabbit1">🐰</div>
+    <div class="rabbit rabbit2">🐇</div>
+    <div class="rabbit rabbit3">🐰</div>
 
     <div class="cockpit">
         <div class="propeller"></div>
@@ -908,14 +910,11 @@ function formatTime(hour, minute) {
 
 function generateTimeSlots() {
     const slots = [];
-    let currentHour = START_HOUR, currentMinute = 0;
-    while (currentHour < END_HOUR || (currentHour === END_HOUR && currentMinute <= END_MINUTE)) {
-        slots.push(formatTime(currentHour, currentMinute));
-        currentMinute += INTERVAL_MINUTES;
-        if (currentMinute >= 60) {
-            currentHour += Math.floor(currentMinute / 60);
-            currentMinute %= 60;
-        }
+    let currentHour = START_HOUR;
+    // 只生成整點時段
+    while (currentHour <= END_HOUR) {
+        slots.push(formatTime(currentHour, 0));
+        currentHour += 1; // 每次加1小時
     }
     return slots;
 }
@@ -928,9 +927,15 @@ function parseTimeRange(timeRange) {
     if (!match) return null;
     let startHour = parseInt(match[1]);
     const startMinute = parseInt(match[2]), startPeriod = match[3];
+    
+    // 只接受整點時間（分鐘必須是 00）
+    if (startMinute !== 0) {
+        return null; // 忽略非整點時間
+    }
+    
     if (startPeriod === 'pm' && startHour !== 12) startHour += 12;
     if (startPeriod === 'am' && startHour === 12) startHour = 0;
-    return formatTime(startHour, startMinute);
+    return formatTime(startHour, 0); // 確保返回整點
 }
 
 function isNotAvailableTime(day, time) {
