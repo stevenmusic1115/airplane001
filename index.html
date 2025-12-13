@@ -922,20 +922,39 @@ function generateTimeSlots() {
 const timeSlots = generateTimeSlots();
 
 function parseTimeRange(timeRange) {
-    const cleaned = timeRange.replace(/\s/g, '').toLowerCase();
-    const match = cleaned.match(/(\d{1,2}):(\d{2})(am|pm)-(\d{1,2}):(\d{2})(am|pm)/);
-    if (!match) return null;
+    if (!timeRange) return null;
+    
+    const cleaned = timeRange.toString().replace(/\s/g, '').toLowerCase();
+    
+    // 匹配時間範圍格式：例如 "9:00am-10:00am" 或 "9:00 AM - 10:00 AM"
+    const match = cleaned.match(/(\d{1,2}):(\d{2})(am|pm)/);
+    
+    if (!match) {
+        console.log('無法解析時間:', timeRange);
+        return null;
+    }
+    
     let startHour = parseInt(match[1]);
-    const startMinute = parseInt(match[2]), startPeriod = match[3];
+    const startMinute = parseInt(match[2]);
+    const startPeriod = match[3];
     
     // 只接受整點時間（分鐘必須是 00）
     if (startMinute !== 0) {
-        return null; // 忽略非整點時間
+        console.log('忽略非整點時間:', timeRange);
+        return null;
     }
     
-    if (startPeriod === 'pm' && startHour !== 12) startHour += 12;
-    if (startPeriod === 'am' && startHour === 12) startHour = 0;
-    return formatTime(startHour, 0); // 確保返回整點
+    // 轉換為 24 小時制
+    if (startPeriod === 'pm' && startHour !== 12) {
+        startHour += 12;
+    }
+    if (startPeriod === 'am' && startHour === 12) {
+        startHour = 0;
+    }
+    
+    const formattedTime = formatTime(startHour, 0);
+    console.log('解析成功:', timeRange, '→', formattedTime);
+    return formattedTime;
 }
 
 function isNotAvailableTime(day, time) {
@@ -958,22 +977,49 @@ function loadFreeSlots() {
         showMessage("⚠️ Please select an instrument first!");
         return;
     }
+    
+    console.log('開始載入空檔，樂器:', instrument);
     freeSlots.clear();
+    
     if (typeof google !== 'undefined' && google.script) {
         google.script.run
             .withSuccessHandler(function(data) {
-                data.forEach(row => {
+                console.log('收到資料:', data);
+                
+                if (!data || data.length === 0) {
+                    console.log('沒有收到任何資料');
+                    showMessage("⚠️ No available slots found");
+                    if (selectedDate) renderCalendar();
+                    return;
+                }
+                
+                data.forEach((row, index) => {
+                    console.log(`處理第 ${index + 1} 筆:`, row);
                     const shortDay = DAY_MAP[row[0]];
                     const startTime = parseTimeRange(row[1]);
-                    if (shortDay && startTime) freeSlots.add(`${shortDay}-${startTime}`);
+                    
+                    if (shortDay && startTime) {
+                        const slotKey = `${shortDay}-${startTime}`;
+                        freeSlots.add(slotKey);
+                        console.log('✓ 加入空檔:', slotKey);
+                    } else {
+                        console.log('✗ 無法處理:', 'Day=', row[0], 'Time=', row[1], 'ShortDay=', shortDay, 'StartTime=', startTime);
+                    }
                 });
+                
+                console.log('總共加入空檔數:', freeSlots.size);
+                console.log('空檔列表:', Array.from(freeSlots));
+                
                 if (selectedDate) renderCalendar();
             })
-            .withFailureHandler(() => {
+            .withFailureHandler((error) => {
+                console.error('載入失敗:', error);
+                showMessage("❌ Error loading slots: " + error.message);
                 if (selectedDate) renderCalendar();
             })
             .getFreeSlots(instrument);
     } else {
+        console.log('Demo 模式 - google.script 不存在');
         if (selectedDate) renderCalendar();
     }
 }
