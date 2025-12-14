@@ -413,7 +413,7 @@
             font-size: 0.95rem;
         }
 
-        .day-selector-btn:hover {
+        .day-selector-btn:hover:not(.disabled) {
             background: #E6F2FF;
             border-color: #1E3A8A;
             transform: translateY(-2px);
@@ -424,6 +424,11 @@
             color: white;
             border-color: #1E3A8A;
             box-shadow: 0 6px 20px rgba(65, 105, 225, 0.5);
+        }
+
+        .day-selector-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .date-selector-btn {
@@ -600,6 +605,34 @@
             font-size: 0.9rem;
         }
 
+        .refresh-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            font-family: 'Fredoka', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .control-panel {
             position: fixed;
             bottom: 0;
@@ -773,7 +806,7 @@
                     <input type="number" id="childAge" class="form-input" placeholder="8" min="3" max="18" required>
                 </div>
                 <div>
-                    <label class="form-label">Instrument *</label>
+                    <label class="form-label">Instrument * <span style="color: #dc2626; font-size: 0.85rem;">(Please select first)</span></label>
                     <select id="instrument" class="form-input" required>
                         <option value="">Select Instrument</option>
                         <option value="Piano">Piano</option>
@@ -806,13 +839,13 @@
             <div style="margin-top: 1.5rem;">
                 <label class="form-label">Select Day of Week *</label>
                 <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.8rem;">
-                    <div class="day-selector-btn" data-day="Mon.">Mon</div>
-                    <div class="day-selector-btn" data-day="Tue.">Tue</div>
-                    <div class="day-selector-btn" data-day="Wed.">Wed</div>
-                    <div class="day-selector-btn" data-day="Thu.">Thu</div>
-                    <div class="day-selector-btn" data-day="Fri.">Fri</div>
-                    <div class="day-selector-btn" data-day="Sat.">Sat</div>
-                    <div class="day-selector-btn" data-day="Sun.">Sun</div>
+                    <div class="day-selector-btn disabled" data-day="Mon.">Mon</div>
+                    <div class="day-selector-btn disabled" data-day="Tue.">Tue</div>
+                    <div class="day-selector-btn disabled" data-day="Wed.">Wed</div>
+                    <div class="day-selector-btn disabled" data-day="Thu.">Thu</div>
+                    <div class="day-selector-btn disabled" data-day="Fri.">Fri</div>
+                    <div class="day-selector-btn disabled" data-day="Sat.">Sat</div>
+                    <div class="day-selector-btn disabled" data-day="Sun.">Sun</div>
                 </div>
             </div>
 
@@ -823,7 +856,12 @@
         </div>
 
         <div class="booking-section">
-            <h2 class="section-title">🎫 Select Your Flight Time</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 class="section-title" style="margin: 0;">🎫 Select Your Flight Time</h2>
+                <button id="refreshButton" class="refresh-btn" disabled>
+                    🔄 Refresh Slots
+                </button>
+            </div>
 
             <div class="legend">
                 <div class="legend-item">
@@ -877,6 +915,7 @@ let classState = {};
 let freeSlots = new Set();
 let selectedDayOfWeek = null;
 let selectedDate = null;
+let isLoadingSlots = false;
 
 function getNextTwoDates(dayOfWeek) {
     const dayIndex = DAYS.indexOf(dayOfWeek);
@@ -947,13 +986,29 @@ function isNotAvailableTime(day, time) {
     return false;
 }
 
-function loadFreeSlots() {
+function loadFreeSlots(showLoadingMessage = false) {
     const instrument = document.getElementById('instrument').value;
     if (!instrument) {
         showMessage("⚠️ Please select an instrument first!");
         return;
     }
+
+    if (isLoadingSlots) return; // 防止重複載入
+    isLoadingSlots = true;
+
+    // 顯示載入中狀態
+    if (showLoadingMessage && selectedDate && selectedDayOfWeek) {
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.3rem; font-weight: 800; color: #1E3A8A;"><span class="loading-spinner"></span> Loading available slots...</div>';
+    }
+
+    // 停用重新整理按鈕
+    const refreshBtn = document.getElementById('refreshButton');
+    refreshBtn.disabled = true;
+    refreshBtn.innerHTML = '<span class="loading-spinner"></span> Loading...';
+    
     freeSlots.clear();
+    
     if (typeof google !== 'undefined' && google.script) {
         google.script.run
             .withSuccessHandler(function(data) {
@@ -962,14 +1017,49 @@ function loadFreeSlots() {
                     const startTime = parseTimeRange(row[1]);
                     if (shortDay && startTime) freeSlots.add(`${shortDay}-${startTime}`);
                 });
-                if (selectedDate) renderCalendar();
+                
+                // 重新初始化 classState
+                classState = {};
+                
+                if (selectedDate && selectedDayOfWeek) {
+                    renderCalendar();
+                    if (showLoadingMessage) {
+                        showMessage("✅ Available slots loaded!");
+                    }
+                }
+                
+                isLoadingSlots = false;
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh Slots';
             })
-            .withFailureHandler(() => {
-                if (selectedDate) renderCalendar();
+            .withFailureHandler((err) => {
+                showMessage("❌ Failed to load slots: " + err.message);
+                if (selectedDate && selectedDayOfWeek) renderCalendar();
+                isLoadingSlots = false;
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh Slots';
             })
             .getFreeSlots(instrument);
     } else {
-        if (selectedDate) renderCalendar();
+        // Demo mode - 模擬一些測試資料
+        console.log("Demo mode: Simulating free slots");
+        // 添加一些測試空檔
+        freeSlots.add("Mon.-10:00 AM");
+        freeSlots.add("Mon.-2:00 PM");
+        freeSlots.add("Tue.-11:00 AM");
+        freeSlots.add("Wed.-3:00 PM");
+        freeSlots.add("Sat.-10:00 AM");
+        
+        if (selectedDate && selectedDayOfWeek) {
+            renderCalendar();
+            if (showLoadingMessage) {
+                showMessage("✅ Demo: Available slots loaded!");
+            }
+        }
+        
+        isLoadingSlots = false;
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = '🔄 Refresh Slots';
     }
 }
 
@@ -1007,6 +1097,12 @@ function updateCount() {
     const count = Object.values(classState).filter(s => s === 'selected').length;
     document.getElementById('selectedCount').textContent = count;
     document.getElementById('bookButton').disabled = count === 0;
+}
+
+function enableDaySelection() {
+    document.querySelectorAll('.day-selector-btn').forEach(btn => {
+        btn.classList.remove('disabled');
+    });
 }
 
 function renderCalendar() {
@@ -1076,6 +1172,23 @@ function renderCalendar() {
     });
 }
 
+// 樂器選擇事件 - 自動載入空檔並啟用日期選擇
+document.getElementById('instrument').addEventListener('change', function() {
+    if (this.value) {
+        enableDaySelection();
+        loadFreeSlots(false); // 不顯示載入訊息,因為還沒選日期
+        document.getElementById('refreshButton').disabled = false;
+        showMessage("✅ Instrument selected! Please select a day.");
+    } else {
+        // 如果取消選擇,停用日期選擇
+        document.querySelectorAll('.day-selector-btn').forEach(btn => {
+            btn.classList.add('disabled');
+        });
+        document.getElementById('refreshButton').disabled = true;
+    }
+});
+
+// 星期選擇事件
 document.querySelectorAll('.day-selector-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const instrument = document.getElementById('instrument').value;
@@ -1083,14 +1196,21 @@ document.querySelectorAll('.day-selector-btn').forEach(btn => {
             showMessage("⚠️ Please select an instrument first!");
             return;
         }
+        
+        if (this.classList.contains('disabled')) {
+            return;
+        }
+        
         document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('selected'));
         this.classList.add('selected');
         selectedDayOfWeek = this.dataset.day;
         selectedDate = null;
+        
         const dateContainer = document.getElementById('dateSelectionContainer');
         const dateSelector = document.getElementById('dateSelector');
         dateContainer.style.display = 'block';
         dateSelector.innerHTML = '';
+        
         const nextDates = getNextTwoDates(selectedDayOfWeek);
         nextDates.forEach(date => {
             const btn = document.createElement('div');
@@ -1102,19 +1222,26 @@ document.querySelectorAll('.day-selector-btn').forEach(btn => {
                 this.classList.add('selected');
                 selectedDate = this.dataset.date;
                 renderCalendar();
+                showMessage("✅ Date selected! Choose your time slot.");
             });
             dateSelector.appendChild(btn);
         });
+        
         renderCalendar();
     });
 });
 
-document.getElementById('instrument').addEventListener('change', function() {
-    if (this.value) {
-        loadFreeSlots();
+// 重新整理按鈕事件
+document.getElementById('refreshButton').addEventListener('click', function() {
+    const instrument = document.getElementById('instrument').value;
+    if (!instrument) {
+        showMessage("⚠️ Please select an instrument first!");
+        return;
     }
+    loadFreeSlots(true); // 顯示載入訊息
 });
 
+// 預約按鈕事件
 document.getElementById('bookButton').addEventListener('click', function() {
     const parentName = document.getElementById('parentName').value.trim();
     const parentPhone = document.getElementById('parentPhone').value.trim();
@@ -1175,9 +1302,18 @@ document.getElementById('bookButton').addEventListener('click', function() {
     }
 });
 
+// 頁面載入時初始化
 window.onload = function() {
     renderCalendar();
     updateCount();
+    
+    // 檢查是否已選擇樂器(例如頁面重新載入時)
+    const instrument = document.getElementById('instrument').value;
+    if (instrument) {
+        enableDaySelection();
+        loadFreeSlots(false);
+        document.getElementById('refreshButton').disabled = false;
+    }
 };
 </script>
 
